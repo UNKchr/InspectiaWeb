@@ -1,42 +1,95 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# ===================================================================
+#      ARCHIVO .gitignore CENTRAL PARA EL MONOREPO INSPECTIA-WEB
+# ===================================================================
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
 
-# Node
-/node_modules
-npm-debug.log
+# ---------------------------
+# Dependencias y Paquetes
+# ---------------------------
+# La regla más importante: nunca subir las dependencias de los proyectos.
+/frontend/node_modules/
+/backend/node_modules/
+
+
+# ---------------------------
+# Secretos y Variables de Entorno
+# ---------------------------
+# Regla global para ignorar CUALQUIER archivo .env en CUALQUIER lugar.
+# Esto es más seguro y limpio que especificar cada uno.
+**/.env
+
+
+# ---------------------------
+# Archivos de Compilación y Salida (Build)
+# ---------------------------
+# Específicos de Angular
+/frontend/dist/
+/frontend/tmp/
+/frontend/.angular/
+/out-tsc/
+/bazel-out/
+
+# Específicos del Backend (si llegaras a usar TypeScript y compilar)
+# /backend/dist/
+
+
+# ---------------------------
+# Logs y Archivos Temporales
+# ---------------------------
+npm-debug.log*
 yarn-error.log
+yarn-debug.log
+testem.log
+/coverage/
+/libpeerconnection.log
 
-# IDEs and editors
+
+# ---------------------------
+# Archivos de IDEs y Editores de Código
+# ---------------------------
+# JetBrains (WebStorm, IntelliJ, etc.)
 .idea/
+
+# Eclipse
 .project
 .classpath
-.c9/
-*.launch
 .settings/
+
+# Sublime Text
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+# Ignora toda la carpeta de configuración local del editor.
+# Es una buena práctica para que cada desarrollador tenga su propia config.
+.vscode/
+# La configuración que SÍ se podría compartir (opcional) es la de extensiones
+# y tareas recomendadas, usando '!'. Por ahora, ignorar todo es más simple.
+# !.vscode/extensions.json
+# !.vscode/launch.json
+# !.vscode/tasks.json
 
-# Miscellaneous
-/.angular/cache
+# Extensión "Local History" de VS Code
+.history/
+
+
+# ---------------------------
+# Archivos de Sistema Operativo
+# ---------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+
+
+# ---------------------------
+# Otros (Misceláneos)
+# ---------------------------
 .sass-cache/
 /connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-
-# System files
-.DS_Store
-Thumbs.db
+/typings/
