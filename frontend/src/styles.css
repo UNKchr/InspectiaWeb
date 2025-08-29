@@ -1,1 +1,45 @@
-/* You can add global styles to this file, and also import other style files */
+  :root {
+    --primary-color: #f1f1f1; /* Blue */
+    --primary-hover-color: #0056b3;
+    --accent-color: #28a745; /* Green */
+    --accent-hover-color: #218838;
+    --dark-bg: #1a202c; /* Dark gray */
+    --dark-secondary-bg: #2d3748;
+    --text-color: #ffffff; /* Light gray */
+    --text-dark-color: #a0aec0;
+    --light-bg: #ffffff;
+    --light-text-color: #4a5568;
+    --border-color: #4a5568;
+    --gradient-start: #1e3a8a; /* Darker Blue */
+    --gradient-end: #0c4a6e; /* Dark Teal */
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.4);
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+  }
