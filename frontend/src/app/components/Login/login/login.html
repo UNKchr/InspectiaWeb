@@ -1,0 +1,108 @@
+  @if (toastMessage) {
+    <div class="toast-notification" [ngClass]="'toast-' + toastType">
+      {{ toastMessage }}
+      <button (click)="hideToast()" class="toast-close-btn">&times;</button>
+    </div>
+  }
+
+<div>
+  <div class="login-overlay active">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-container">
+      <div class="login-header">
+        <div class="login-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8V4H8"/>
+            <rect width="16" height="12" x="4" y="8" rx="2"/>
+            <path d="M2 14h2"/>
+            <path d="M20 14h2"/>
+            <path d="M15 13v2"/>
+            <path d="M9 13v2"/>
+          </svg>
+        </div>
+        <h2 class="login-title">Bienvenido</h2>
+        <p class="login-subtitle">Ingresa a tu cuenta INSPECTIA</p>
+      </div>
+
+      <div class="login-form">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-input"
+            placeholder="tu@empresa.com"
+            formControlName="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <div class="password-input">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-input"
+              placeholder="••••••••"
+              formControlName="password"
+            />
+            <button
+              type="button"
+              (click)="togglePassword()"
+              class="password-toggle">
+              @if (!showPassword) {
+              <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              }
+              @if (showPassword) {
+              <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                <line x1="2" x2="22" y1="2" y2="22"/>
+              </svg>
+              }
+            </button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" class="checkbox">
+            <span class="checkbox-text">Recordarme</span>
+          </label>
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="isLoading || loginForm.invalid"
+          class="login-submit-btn"
+          [class.loading]="isLoading">
+          @if (isLoading) {
+          <div  class="loading-content">
+            <div class="spinner"></div>
+            <span>Iniciando sesión...</span>
+          </div>
+          }
+          @if (!isLoading) {
+          <span>Iniciar Sesión</span>
+          }
+        </button>
+      </div>
+
+      <div class="login-footer">
+        <p class="signup-text">
+          ¿No tienes cuenta? 
+          <a href="#" class="signup-link">Regístrate aquí</a>
+        </p>
+      </div>
+
+      <button (click)="onClose()" class="close-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"/>
+          <path d="m6 6 12 12"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
