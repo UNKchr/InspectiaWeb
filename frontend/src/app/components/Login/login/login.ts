@@ -12,6 +12,7 @@ import { Auth, AuthResponse } from '../../../core/services/auth';
 })
 export class LoginComponent {
   @Output() closeModal = new EventEmitter<void>();
+  @Output() switchToRegister = new EventEmitter<void>();
 
   // Propiedades para la notificacion (toast)
   toastMessage: string | null = null;
@@ -35,6 +36,10 @@ export class LoginComponent {
 
   onClose() {
     this.closeModal.emit();
+  }
+
+  onSwitchToRegister() {
+    this.switchToRegister.emit();
   }
 
   togglePassword() {

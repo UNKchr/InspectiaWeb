@@ -34,7 +34,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,16 +51,17 @@
 }
 
 .login-container {
-  background-color: var(--dark-secondary-bg);
-  padding: 2.5rem;
-  border-radius: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  width: 90%;
-  max-width: 450px;
   position: relative;
-  transform: translateY(20px) scale(0.95);
-  opacity: 0;
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  max-width: 32rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.5s ease-out;
 }
 
 .login-overlay.active .login-container {
@@ -224,6 +225,22 @@
   gap: 0.75rem;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .spinner {
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top: 3px solid var(--light-bg);
@@ -250,6 +267,7 @@
 
 .signup-link {
   color: var(--accent-color);
+  cursor: pointer;
   font-weight: 600;
   transition: color 0.3s ease;
 }
@@ -300,4 +318,23 @@
     padding: 0.75rem;
     font-size: 1rem;
   }
+}
+
+/* Custom Scrollbar for Modal */
+.login-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.login-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.login-container::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.5);
+  border-radius: 3px;
+}
+
+.login-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.7);
 }
