@@ -1,1 +1,17 @@
-<app-landing-page></app-landing-page>
+<app-landing-page (openLogin)="openLoginModal()" (openRegister)="openRegisterModal()"></app-landing-page>
+
+<!-- Modal de Login -->
+@if (showLoginModal) {
+  <app-login 
+    (closeModal)="closeModals()" 
+    (switchToRegister)="handleSwitchToRegister()">
+  </app-login>
+}
+
+<!-- Modal de Registro -->
+@if (showRegisterModal) {
+  <app-register 
+    (closeRegisterModal)="closeModals()" 
+    (switchToLogin)="handleSwitchToLogin()">
+  </app-register>
+}

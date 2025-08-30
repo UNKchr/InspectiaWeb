@@ -29,7 +29,7 @@
           <a href="#servicios" class="nav-link">Servicios</a>
           <a href="#nosotros" class="nav-link">Nosotros</a>
           <a href="#contacto" class="nav-link">Contacto</a>
-          <button (click)="toggleLogin()" class="login-btn">
+          <button (click)="onLoginClick()" class="login-btn">
             Iniciar Sesión
           </button>
         </div>
@@ -59,7 +59,7 @@
           <a href="#servicios" class="mobile-nav-link" (click)="toggleMobileMenu()">Servicios</a>
           <a href="#nosotros" class="mobile-nav-link" (click)="toggleMobileMenu()">Nosotros</a>
           <a href="#contacto" class="mobile-nav-link" (click)="toggleMobileMenu()">Contacto</a>
-          <button (click)="toggleLogin(); toggleMobileMenu()" class="mobile-login-btn">
+          <button (click)="onLoginClick(); toggleMobileMenu()" class="mobile-login-btn">
             Iniciar Sesión
           </button>
         </div>
@@ -68,7 +68,6 @@
   </nav>
 
   <!-- Main Content -->
-  @if (!showLogin) {
   <main class="main-content">
     <!-- Hero Section -->
     <section id="inicio" class="hero-section">
@@ -83,7 +82,7 @@
             Detección automática de defectos con precisión profesional.
           </p>
           <div class="hero-buttons">
-            <button (click)="toggleLogin()" class="primary-btn">
+            <button (click)="onRegisterClick()" class="primary-btn">
               <span>Comenzar Ahora</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"/>
@@ -249,7 +248,3 @@
       </div>
     </footer>
   </main>
-}
-  @if (showLogin) {
-    <app-login (closeModal)="toggleLogin()"></app-login>
-  }

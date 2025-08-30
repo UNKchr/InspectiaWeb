@@ -14,6 +14,12 @@ export interface AuthResponse {
   };
 }
 
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -39,6 +45,12 @@ export class Auth {
 
   public isLoggedIn(): boolean {
     return !!this.tokenStorage.getToken();
+  }
+
+  register(data: RegisterData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.ApiUrl}/register`, data).pipe(tap(response => {
+      this.handleAuthentication(response);
+    }));
   }
 
   login(credentials: { email: string, password: string}): Observable<AuthResponse> {

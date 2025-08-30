@@ -1,21 +1,27 @@
-import { Component } from '@angular/core';
-import { LoginComponent } from '../../Login/login/login';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [
-    LoginComponent
-  ],
+  imports: [CommonModule],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css'
 })
 export class LandingPageComponent {
-  showLogin = false;
+  @Output() openLogin = new EventEmitter<void>();
+  @Output() openRegister = new EventEmitter<void>();
+
   mobileMenuOpen = false;
 
-  toggleLogin() {
-    this.showLogin = !this.showLogin;
+  onLoginClick() {
+    console.log('LandingPageComponent: onLoginClick');
+    this.openLogin.emit();
+  }
+
+  onRegisterClick() {
+    console.log('LandingPageComponent: onRegisterClick');
+    this.openRegister.emit();
   }
 
   toggleMobileMenu() {
