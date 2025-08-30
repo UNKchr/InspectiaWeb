@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Auth, AuthResponse } from '../../../core/services/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,7 @@ export class LoginComponent {
   // Inyeccion de dependencias con inject()
   private fb = inject(FormBuilder);
   private authService = inject(Auth);
+  private router = inject(Router);
   
   constructor() {
     // Inicializamos el formulario reactivo
@@ -57,9 +59,11 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: (response: AuthResponse) => {
         this.isLoading = false;
-        this.showToast('Login exitoso. Bienvenido ' + response.user.name, 'success');
+        this.showToast('Login exitoso. Redirigiendo...', 'success');
 
-        setTimeout(() => this.onClose(), 3000);
+        setTimeout(() => {
+          this.router.navigate(['/panel']);
+        }, 2000);
       },
       error: (err) => {
         this.isLoading = false;

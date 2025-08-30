@@ -1,4 +1,4 @@
-<app-landing-page (openLogin)="openLoginModal()" (openRegister)="openRegisterModal()"></app-landing-page>
+<router-outlet (activate)="onActivate($event)"></router-outlet>
 
 <!-- Modal de Login -->
 @if (showLoginModal) {
