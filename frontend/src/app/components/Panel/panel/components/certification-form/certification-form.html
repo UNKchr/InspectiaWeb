@@ -1,0 +1,143 @@
+      <!-- Certification Form Section -->
+<section class="content-section">
+  <div class="section-header">
+    <h2>Nueva Certificación</h2>
+    <p>Solicita la certificación de calidad para tu producto</p>
+  </div>
+
+  <form (ngSubmit)="onSubmitCertification()" #certForm="ngForm" class="form-container">
+    <!-- Tipo de Certificación -->
+    <div class="form-group">
+      <label class="form-label" for="certificationType">Tipo de Certificación</label>
+      <select 
+        id="certificationType"
+        name="certificationType"
+        [(ngModel)]="certificationData.certificationType" 
+        class="form-select"
+        required
+      >
+        <option class="category" value="" disabled>Seleccionar categoría</option>
+        <option class="category" value="CALIDAD_SOFTWARE">Calidad de Software ($1000)</option>
+        <option class="category" value="ISO_27001">ISO 27001 ($1500)</option>
+        <option class="category" value="SEGURIDAD_APP">Seguridad de Aplicaciones ($2000)</option>
+      </select>
+    </div>
+
+    <!-- Nombre del Proyecto -->
+    <div class="form-group">
+      <label class="form-label" for="projectName">Nombre del Proyecto</label>
+      <input 
+        id="projectName"
+        name="projectName"
+        type="text" 
+        [(ngModel)]="certificationData.projectName"
+        class="form-input" 
+        placeholder="Ej: mi-aplicacion-web"
+        required
+      >
+    </div>
+
+    <!-- Descripción del Proyecto -->
+    <div class="form-group">
+      <label class="form-label" for="projectDescription">Descripción del Proyecto</label>
+      <textarea 
+        id="projectDescription"
+        name="projectDescription"
+        [(ngModel)]="certificationData.projectDescription"
+        class="form-textarea" 
+        rows="4" 
+        placeholder="Describe las características principales del proyecto..."
+        required
+      ></textarea>
+    </div>
+
+    <!-- URL del Proyecto -->
+    <div class="form-group">
+      <label class="form-label" for="projectUrl">URL del Proyecto</label>
+      <input 
+        id="projectUrl"
+        name="projectUrl"
+        type="url" 
+        [(ngModel)]="certificationData.projectUrl"
+        class="form-input" 
+        placeholder="https://mi-proyecto.com"
+        required
+      >
+    </div>
+
+    <!-- URL del Repositorio -->
+    <div class="form-group">
+      <label class="form-label" for="repoUrl">URL del Repositorio</label>
+      <input 
+        id="repoUrl"
+        name="repoUrl"
+        type="url" 
+        [(ngModel)]="certificationData.repoUrl"
+        class="form-input" 
+        placeholder="https://github.com/usuario/app"
+        required
+      >
+    </div>
+
+    <!-- Plataforma de la Aplicación -->
+    <div class="form-group">
+      <label class="form-label" for="appPlatform">Plataforma de la Aplicación</label>
+      <select 
+        id="appPlatform"
+        name="appPlatform"
+        [(ngModel)]="certificationData.appPlatform" 
+        class="form-select"
+      >
+        <option class="category" value="">Seleccionar plataforma (opcional)</option>
+        <option class="category" value="Web">Web</option>
+        <option class="category" value="Mobile">Móvil</option>
+        <option class="category" value="Desktop">Escritorio</option>
+      </select>
+    </div>
+
+    <!-- Campos Opcionales -->
+    <div class="form-group">
+      <label class="form-label" for="companyName">Nombre de la Empresa (Opcional)</label>
+      <input 
+        id="companyName"
+        name="companyName"
+        type="text" 
+        [(ngModel)]="certificationData.companyName"
+        class="form-input" 
+        placeholder="Ej: Mi Compañía S.A.S"
+      >
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="companyAddress">Dirección de la Empresa (Opcional)</label>
+      <input 
+        id="companyAddress"
+        name="companyAddress"
+        type="text" 
+        [(ngModel)]="certificationData.companyAddress"
+        class="form-input" 
+        placeholder="Ej: Calle 123 #45-67, Bogotá"
+      >
+    </div>
+
+    <!-- Costo y Botón de Envío -->
+    <div class="form-footer">
+      <div class="cost-display">
+        Costo: <strong>${{ selectedCost | number:'1.0-0' }}</strong>
+      </div>
+      <button 
+        type="submit" 
+        class="submit-btn" 
+        [disabled]="certForm.invalid || isSubmitting">
+        <span *ngIf="!isSubmitting">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="m12 5 7 7-7 7"/>
+          </svg>
+          Enviar y Pagar
+        </span>
+        <span *ngIf="isSubmitting">Enviando...</span>
+      </button>
+    </div>
+  </form>
+</section>

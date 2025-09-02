@@ -32,6 +32,7 @@
     </div>
 
     <!-- User Welcome -->
+     @if (user) {
     <div class="user-welcome">
       <p class="welcome-text" [class.hidden]="sidebarCollapsed">Bienvenido</p>
       <div class="user-info">
@@ -47,14 +48,17 @@
         </div>
       </div>
     </div>
+    }
 
     <!-- Balance Display -->
+     @if (user) {
     <div class="balance-display" [class.hidden]="sidebarCollapsed">
       <div class="balance-card">
         <span class="balance-label">Saldo Disponible</span>
-        <span class="balance-amount">${{ user.balance | number:'1.0-0' }}</span>
+        <span class="balance-amount">${{ user.saldo | number:'1.0-0' }}</span>
       </div>
     </div>
+    }
 
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
@@ -168,11 +172,13 @@
     </header>
 
     <!-- Content Sections -->
-    <div class="content-body">
+    <div class="content-body" [ngSwitch]="activeSection">
       <!-- Welcome Section -->
-      <section *ngIf="activeSection === 'welcome'" class="content-section welcome-section">
+      <section *ngSwitchCase="'welcome'" class="content-section welcome-section">
         <div class="welcome-hero">
+          @if (user) {
           <h2>¡Bienvenido, {{ user.name }}!</h2>
+          }
           <p>Gestiona tus certificaciones de calidad y supervisa todos tus procesos desde este panel.</p>
           <div class="stats-grid">
             <div class="stat-card">
@@ -195,7 +201,9 @@
                 </svg>
               </div>
               <div class="stat-info">
-                <span class="stat-number">${{ user.balance | number:'1.0-0' }}</span>
+                @if (user) {
+                <span class="stat-number">${{ user.saldo | number:'1.0-0' }}</span>
+                }
                 <span class="stat-label">Saldo Disponible</span>
               </div>
             </div>
@@ -203,208 +211,13 @@
         </div>
       </section>
 
-      <!-- Certification Form Section -->
-      <section *ngIf="activeSection === 'certification'" class="content-section">
-        <div class="section-header">
-          <h2>Nueva Certificación</h2>
-          <p>Solicita la certificación de calidad para tu producto</p>
-        </div>
-
-        <div class="form-container">
-          <div class="form-group">
-            <label class="form-label">Nombre del Producto</label>
-            <input 
-              type="text" 
-              [(ngModel)]="certificationForm.productName"
-              class="form-input" 
-              placeholder="Ej: Smartphone XZ-100"
-            >
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Tipo de Producto</label>
-            <select [(ngModel)]="certificationForm.productType" class="form-select">
-              <option value="">Seleccionar categoría</option>
-              <option value="electronics">Electrónicos</option>
-              <option value="automotive">Automotriz</option>
-              <option value="textile">Textil</option>
-              <option value="food">Alimentos</option>
-              <option value="medical">Dispositivos Médicos</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Descripción del Producto</label>
-            <textarea 
-              [(ngModel)]="certificationForm.description"
-              class="form-textarea" 
-              rows="4" 
-              placeholder="Describe las características principales del producto a certificar..."
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Imágenes del Producto</label>
-            <div class="file-upload">
-              <input type="file" id="product-images" class="file-input" multiple accept="image/*">
-              <label for="product-images" class="file-label">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17,8 12,3 7,8"/>
-                  <line x1="12" x2="12" y1="3" y2="15"/>
-                </svg>
-                <span>Subir Imágenes</span>
-              </label>
-            </div>
-          </div>
-
-          <button class="submit-btn" (click)="onSubmitCertification()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"/>
-              <path d="m12 5 7 7-7 7"/>
-            </svg>
-            Enviar Certificación
-          </button>
-        </div>
-      </section>
-
-      <!-- User Certifications Section -->
-      <section *ngIf="activeSection === 'consult'" class="content-section">
-        <div class="section-header">
-          <h2>Mis Certificaciones</h2>
-          <p>Revisa el estado de tus certificaciones solicitadas</p>
-        </div>
-
-        <div class="cards-grid">
-          <div *ngFor="let cert of userCertifications" class="certification-card">
-            <div class="card-header">
-              <h3>{{ cert.product }}</h3>
-              <span class="status-badge" [class]="cert.status.toLowerCase()">
-                {{ cert.status }}
-              </span>
-            </div>
-            <div class="card-body">
-              <div class="card-info">
-                <span class="info-label">Fecha:</span>
-                <span class="info-value">{{ cert.date }}</span>
-              </div>
-              <div class="card-info" *ngIf="cert.score">
-                <span class="info-label">Puntuación:</span>
-                <span class="info-value">{{ cert.score }}/100</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Admin All Certifications Section -->
-      <section *ngIf="activeSection === 'admin-consult' && isAdmin()" class="content-section">
-        <div class="section-header">
-          <h2>Todas las Certificaciones</h2>
-          <p>Administra todas las certificaciones del sistema</p>
-        </div>
-
-        <div class="cards-grid">
-          <div *ngFor="let cert of allCertifications" class="certification-card admin-card">
-            <div class="card-header">
-              <div>
-                <h3>{{ cert.product }}</h3>
-                <p class="user-name">{{ cert.user }}</p>
-              </div>
-              <span class="status-badge" [class]="cert.status.toLowerCase()">
-                {{ cert.status }}
-              </span>
-            </div>
-            <div class="card-body">
-              <div class="card-info">
-                <span class="info-label">Fecha:</span>
-                <span class="info-value">{{ cert.date }}</span>
-              </div>
-              <div class="card-info">
-                <span class="info-label">Puntuación:</span>
-                <span class="info-value">{{ cert.score }}/100</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Reload Balance Section -->
-      <section *ngIf="activeSection === 'reload-balance'" class="content-section">
-        <div class="section-header">
-          <h2>Recargar Saldo</h2>
-          <p>Agrega fondos a tu cuenta para realizar certificaciones</p>
-        </div>
-
-        <div class="form-container small">
-          <div class="current-balance">
-            <span class="balance-label">Saldo Actual:</span>
-            <span class="balance-amount">${{ user.balance | number:'1.0-0' }}</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Cantidad a Recargar</label>
-            <input 
-              type="number" 
-              [(ngModel)]="reloadBalanceForm.amount"
-              class="form-input" 
-              placeholder="0.00"
-              min="1"
-              step="1"
-            >
-          </div>
-
-          <button class="submit-btn" (click)="onReloadBalance()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
-              <path d="M3 5v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/>
-              <path d="M12 13v6"/>
-              <path d="M9 16h6"/>
-            </svg>
-            Recargar
-          </button>
-        </div>
-      </section>
-
-      <!-- Admin Reload Balance Section -->
-      <section *ngIf="activeSection === 'admin-reload' && isAdmin()" class="content-section">
-        <div class="section-header">
-          <h2>Recargar Saldo a Usuario</h2>
-          <p>Administra el saldo de cualquier usuario del sistema</p>
-        </div>
-
-        <div class="form-container small">
-          <div class="form-group">
-            <label class="form-label">Buscar Usuario</label>
-            <input 
-              type="text" 
-              [(ngModel)]="adminReloadForm.userSearch"
-              class="form-input" 
-              placeholder="Nombre o email del usuario"
-            >
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Cantidad a Recargar</label>
-            <input 
-              type="number" 
-              [(ngModel)]="adminReloadForm.amount"
-              class="form-input" 
-              placeholder="0.00"
-              min="1"
-              step="1"
-            >
-          </div>
-
-          <button class="submit-btn" (click)="onAdminReload()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2v6l3-3"/>
-              <path d="M12 8v6l-3-3"/>
-            </svg>
-            Recargar
-          </button>
-        </div>
-      </section>
+      <app-certification-form *ngSwitchCase="'certification'"></app-certification-form>
+      <app-certifications-list *ngSwitchCase="'consult'" [certifications]="userCertifications"></app-certifications-list>
+      <app-certifications-list *ngSwitchCase="'admin-consult'" [certifications]="allCertifications" [isAdminView]="true"></app-certifications-list>
+      @if (user) {
+      <app-reload-balance-form *ngSwitchCase="'reload-balance'" [currentBalance]="user.saldo"></app-reload-balance-form>
+      }
+      
     </div>
   </main>
 </div>

@@ -4,10 +4,12 @@ import { LandingPageComponent } from './components/LandingPage/landing-page/land
 import { LoginComponent } from './components/Login/login/login';
 import { Register } from './components/Register/register/register';
 import { RouterOutlet } from '@angular/router';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @Component({
   selector: 'app-root',
-  imports: [LoginComponent, Register, CommonModule, RouterOutlet],
+  standalone: true,
+  imports: [LoginComponent, Register, CommonModule, RouterOutlet, NotificationComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
