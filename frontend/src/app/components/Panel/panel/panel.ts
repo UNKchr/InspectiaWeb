@@ -1,23 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { CertificationForm } from './components/certification-form/certification-form';
+import { CertificationsList } from './components/certifications-list/certifications-list';
+import { ReloadBalanceForm } from './components/reload-balance-form/reload-balance-form';
+import { Auth } from '../../../core/services/auth';
+import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-panel',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule, 
+    CommonModule, 
+    CertificationForm, 
+    CertificationsList, 
+    ReloadBalanceForm
+  ],
   templateUrl: './panel.html',
   styleUrl: './panel.css'
 })
-export class Panel {
-  user = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    role: 'user',
-    balance: 100
-  };
+export class Panel implements OnInit, OnDestroy {
+  private authService = inject(Auth);
+  private userSubscription: Subscription | undefined;
 
-  activeSection = 'Welcome';
+  user: User | null = null;
+
+  activeSection = 'welcome';
   sidebarCollapsed = false;
 
   userCertifications = [
@@ -32,21 +42,17 @@ export class Panel {
     { id: 3, user: 'María Rodríguez', product: 'Mouse Inalámbrico', status: 'Aprobado', date: '2025-08-23', score: 91 }
   ];
 
-  certificationForm = {
-    productName: '',
-    productType: '',
-    description: '',
-    images: null
-  };
+  ngOnInit(): void {
+    // Nos suscribimos al observable del usuario para recibir actualizaciones en tiempo real
+    this.userSubscription = this.authService.user$.subscribe(user => {
+      this.user = user;
+    });
+  }
 
-  reloadBalanceForm = {
-    amount: ''
-  };
-
-  adminReloadForm = {
-    userSearch: '',
-    amount: ''
-  };
+  ngOnDestroy(): void {
+    // Es una buena práctica desuscribirse para evitar fugas de memoria
+    this.userSubscription?.unsubscribe();
+  }
 
   toggleSidebar() {
     this.sidebarCollapsed = !this.sidebarCollapsed;
@@ -60,26 +66,10 @@ export class Panel {
   }
 
   isAdmin(): boolean {
-    return this.user.role === 'admin';
-  }
-
-  onSubmitCertification() {
-    console.log('Enviando certificación:', this.certificationForm);
-    // Lógica de envío
-  }
-
-  onReloadBalance() {
-    console.log('Recargando saldo:', this.reloadBalanceForm.amount);
-    // Lógica de recarga
-  }
-
-  onAdminReload() {
-    console.log('Recarga admin:', this.adminReloadForm);
-    // Lógica de recarga admin
+    return this.user?.role === 'admin';
   }
 
   logout() {
-    console.log('Cerrando sesión');
-    // Lógica de cierre de sesión
+    this.authService.logout();
   }
 }

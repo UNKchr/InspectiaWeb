@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -7,30 +8,45 @@ const USER_KEY = 'auth-user';
   providedIn: 'root'
 })
 export class TokenStorage {
-  constructor() {}
+  private isBrowser: boolean;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   public signOut(): void {
-    window.localStorage.clear();
+    if (this.isBrowser) {
+      window.localStorage.clear();
+    }
   }
 
   public saveToken(token: string) {
-    window.localStorage.removeItem(TOKEN_KEY);
-    window.localStorage.setItem(TOKEN_KEY, token);
+    if (this.isBrowser) {
+      window.localStorage.removeItem(TOKEN_KEY);
+      window.localStorage.setItem(TOKEN_KEY, token);
+    }
   }
 
   public getToken(): string | null {
-    return window.localStorage.getItem(TOKEN_KEY);
+    if (this.isBrowser) {
+      return window.localStorage.getItem(TOKEN_KEY);
+    }
+    return null;
   }
 
   public saveUser(user: any): void {
-    window.localStorage.removeItem(USER_KEY);
-    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+    if (this.isBrowser) {
+      window.localStorage.removeItem(USER_KEY);
+      window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+    }
   }
 
   public getUser(): any {
-    const user = window.localStorage.getItem(USER_KEY);
-    if (user) {
-      return JSON.parse(user);
+    if (this.isBrowser) {
+      const user = window.localStorage.getItem(USER_KEY);
+      if (user) {
+        return JSON.parse(user);
+      }
     }
     return null;
   }
