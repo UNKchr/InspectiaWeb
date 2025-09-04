@@ -176,11 +176,6 @@
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
   }
 
-  .mobile-nav.active {
-    display: block;
-    transform: translateY(0);
-    opacity: 1;
-  }
 
   .mobile-nav-content {
     display: flex;
@@ -515,11 +510,6 @@
     color: var(--primary-color);
   }
 
-  /* Helper Classes for Angular Bindings */
-  .hidden {
-    display: none !important;
-  }
-
   /* Animations */
   @keyframes fadeInSlideUp {
     from {
@@ -603,18 +593,6 @@
 
     .brand {
       font-size: 1.2rem;
-    }
-
-    .login-container {
-      padding: 1.5rem;
-    }
-
-    .login-title {
-      font-size: 1.8rem;
-    }
-
-    .login-subtitle {
-      font-size: 0.9rem;
     }
 
     .form-input,
