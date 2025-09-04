@@ -26,25 +26,25 @@ export interface RequestResponse {
 })
 export class RequestService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}`;
+  private ApiUrl = `${environment.apiUrl}`;
 
   createRequest(data: CertificationRequestData): Observable<RequestResponse> {
-      return this.http.post<RequestResponse>(`${this.apiUrl}/requests`, data);
+      return this.http.post<RequestResponse>(`${this.ApiUrl}/requests`, data);
   }
 
   getMyRequests(): Observable<CertificationRequest[]> {
-    return this.http.get<CertificationRequest[]>(`${this.apiUrl}/requests/my-requests`);
+    return this.http.get<CertificationRequest[]>(`${this.ApiUrl}/requests/my-requests`);
   }
 
   getAllRequests(): Observable<CertificationRequest[]> {
-    return this.http.get<CertificationRequest[]>(`${this.apiUrl}/admin/requests`);
+    return this.http.get<CertificationRequest[]>(`${this.ApiUrl}/admin/requests`);
   }
 
   updateRequestStatus(requestId: string, status: string): Observable<{ message: string, request: CertificationRequest }> {
-    return this.http.put<{ message: string, request: CertificationRequest }>(`${this.apiUrl}/admin/requests/${requestId}/status`, { status });
+    return this.http.put<{ message: string, request: CertificationRequest }>(`${this.ApiUrl}/admin/requests/${requestId}/status`, { status });
   }
 
   deleteRequest(requestId: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/admin/requests/${requestId}`);
+    return this.http.delete<{ message: string }>(`${this.ApiUrl}/admin/requests/${requestId}`);
   }
 }
