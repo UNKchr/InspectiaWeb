@@ -5,6 +5,7 @@ import { TokenStorage } from './token-storage';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import { UserService } from './user.service';
+import { environment } from '../../../environments/environment';
 
 export interface AuthResponse {
   token: string;
@@ -21,8 +22,8 @@ export interface RegisterData {
   providedIn: 'root'
 })
 export class Auth {
-  private ApiUrl = 'http://localhost:3000/api/auth';
-  
+  private ApiUrl = `${environment.apiUrl}/auth`;
+
   // BehaviorSubject para mantener el estado del usuario actual de forma reactiva
   private userSubject = new BehaviorSubject<User | null>(null);
   public user$ = this.userSubject.asObservable();
