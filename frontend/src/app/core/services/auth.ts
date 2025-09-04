@@ -36,7 +36,7 @@ export class Auth {
   ) {
     // Si hay un token, obtenemos el perfil completo del usuario
     if (this.tokenStorage.getToken()) {
-      this.fetchAndSetUser();
+      //this.fetchAndSetUser();
     }
   }
 
