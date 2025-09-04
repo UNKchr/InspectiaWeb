@@ -15,6 +15,7 @@
           "options": {
             "deployUrl": "./",
             "baseHref": "./",
+            "outputPath": "build/inspectia-web",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
