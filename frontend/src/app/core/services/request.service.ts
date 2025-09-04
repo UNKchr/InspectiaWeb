@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Auth } from './auth';
+import { CertificationRequest } from '../models/certification-request.model';
 
 export interface CertificationRequestData {
   certificationType: string;
@@ -17,7 +17,7 @@ export interface CertificationRequestData {
 export interface RequestResponse {
   message: string;
   newSaldo: number;
-  request: any; 
+  request: CertificationRequest; 
 }
 
 @Injectable({
@@ -25,11 +25,25 @@ export interface RequestResponse {
 })
 export class RequestService {
   private http = inject(HttpClient);
-  private authService = inject(Auth);
-  private apiUrl = 'http://localhost:3000/api/requests';
+  private apiUrl = 'http://localhost:3000/api';
 
-  // en request.service.ts
   createRequest(data: CertificationRequestData): Observable<RequestResponse> {
-      return this.http.post<RequestResponse>(`${this.apiUrl}`, data);
+      return this.http.post<RequestResponse>(`${this.apiUrl}/requests`, data);
   }
-}  
+
+  getMyRequests(): Observable<CertificationRequest[]> {
+    return this.http.get<CertificationRequest[]>(`${this.apiUrl}/requests/my-requests`);
+  }
+
+  getAllRequests(): Observable<CertificationRequest[]> {
+    return this.http.get<CertificationRequest[]>(`${this.apiUrl}/admin/requests`);
+  }
+
+  updateRequestStatus(requestId: string, status: string): Observable<{ message: string, request: CertificationRequest }> {
+    return this.http.put<{ message: string, request: CertificationRequest }>(`${this.apiUrl}/admin/requests/${requestId}/status`, { status });
+  }
+
+  deleteRequest(requestId: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/admin/requests/${requestId}`);
+  }
+}

@@ -72,6 +72,7 @@ export class Auth {
     return this.http.post<AuthResponse>(`${this.ApiUrl}/login`, credentials).pipe(
       tap(response => {
         this.handleAuthentication(response);
+        this.fetchAndSetUser(); // Obtenemos el perfil completo del usuario
       })
     );
   }
