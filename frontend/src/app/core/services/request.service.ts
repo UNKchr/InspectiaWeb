@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CertificationRequest } from '../models/certification-request.model';
+import { environment } from '../../../environments/environment';
 
 export interface CertificationRequestData {
   certificationType: string;
@@ -25,7 +26,7 @@ export interface RequestResponse {
 })
 export class RequestService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = `${environment.apiUrl}`;
 
   createRequest(data: CertificationRequestData): Observable<RequestResponse> {
       return this.http.post<RequestResponse>(`${this.apiUrl}/requests`, data);
