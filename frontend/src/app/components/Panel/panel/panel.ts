@@ -29,28 +29,15 @@ export class Panel implements OnInit, OnDestroy {
 
   activeSection = 'welcome';
   sidebarCollapsed = false;
-
-  userCertifications = [
-    { id: 1, product: 'Smartphone XZ-100', status: 'Aprobado', date: '2025-08-25', score: 98 },
-    { id: 2, product: 'Laptop Pro 15"', status: 'Rechazado', date: '2025-08-24', score: 72 },
-    { id: 3, product: 'Tablet Ultra', status: 'Pendiente', date: '2025-08-23', score: null }
-  ];
-
-  allCertifications = [
-    { id: 1, user: 'Ana García', product: 'Monitor 4K', status: 'Aprobado', date: '2025-08-25', score: 95 },
-    { id: 2, user: 'Carlos López', product: 'Teclado Gaming', status: 'Rechazado', date: '2025-08-24', score: 68 },
-    { id: 3, user: 'María Rodríguez', product: 'Mouse Inalámbrico', status: 'Aprobado', date: '2025-08-23', score: 91 }
-  ];
+  showLogoutModal = false;
 
   ngOnInit(): void {
-    // Nos suscribimos al observable del usuario para recibir actualizaciones en tiempo real
     this.userSubscription = this.authService.user$.subscribe(user => {
       this.user = user;
     });
   }
 
   ngOnDestroy(): void {
-    // Es una buena práctica desuscribirse para evitar fugas de memoria
     this.userSubscription?.unsubscribe();
   }
 
@@ -71,5 +58,18 @@ export class Panel implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
+  }
+
+  promptLogout(): void {
+    this.showLogoutModal = true;
+  }
+
+  cancelLogout(): void {
+    this.showLogoutModal = false;
+  }
+
+  confirmLogout(): void {
+    this.logout();
+    this.showLogoutModal = false;
   }
 }

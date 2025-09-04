@@ -143,7 +143,7 @@
 
     <!-- Logout Button -->
     <div class="sidebar-footer">
-      <button class="logout-btn" (click)="logout()">
+      <button class="logout-btn" (click)="promptLogout()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16,17 21,12 16,7"/>
@@ -210,13 +210,24 @@
           </div>
         </div>
       </section>
-
+      
       <app-certification-form *ngSwitchCase="'certification'"></app-certification-form>
-      <app-certifications-list *ngSwitchCase="'consult'" [certifications]="userCertifications"></app-certifications-list>
-      <app-certifications-list *ngSwitchCase="'admin-consult'" [certifications]="allCertifications" [isAdminView]="true"></app-certifications-list>
+      <app-certifications-list *ngSwitchCase="'consult'"></app-certifications-list>
+      <app-certifications-list *ngSwitchCase="'admin-consult'" [isAdminView]="true"></app-certifications-list>
       @if (user) {
       <app-reload-balance-form *ngSwitchCase="'reload-balance'" [currentBalance]="user.saldo"></app-reload-balance-form>
       }
+      
+      <div class="modal-overlay" *ngIf="showLogoutModal">
+        <div class="modal-content">
+        <h4>Confirmar Cierre de Sesión</h4>
+        <p>¿Estás seguro de que quieres cerrar la sesión?</p>
+        <div class="modal-actions">
+          <button class="modal-btn cancel-btn" (click)="cancelLogout()">Cancelar</button>
+          <button class="modal-btn confirm-btn" (click)="confirmLogout()">Cerrar Sesión</button>
+        </div>
+        </div>
+      </div>
       
     </div>
   </main>

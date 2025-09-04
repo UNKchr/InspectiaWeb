@@ -1,34 +1,85 @@
-      <!-- Certifications Section -->
+<!-- Certifications Section -->
 <section class="content-section">
   <div class="section-header">
-    <h2>{{ isAdminView ? 'Todas las Certificaciones' : 'Mis Certificaciones' }}</h2>
-    <p>{{ isAdminView ? 'Administra todas las certificaciones del sistema' : 'Revisa el estado de tus certificaciones solicitadas' }}</p>
+    <h2>{{ isAdminView ? 'Todas las Solicitudes' : 'Mis Solicitudes' }}</h2>
+    <p>{{ isAdminView ? 'Administra todas las solicitudes del sistema' : 'Revisa el estado de tus solicitudes' }}</p>
   </div>
 
-  <div class="cards-grid">
-    <div *ngFor="let cert of certifications" class="certification-card" [class.admin-card]="isAdminView">
+  <!-- Indicador de Carga -->
+  <div *ngIf="loading" class="loading-indicator">
+    <p>Cargando solicitudes...</p>
+  </div>
+
+  <!-- Estado Vacío -->
+  <div *ngIf="!loading && certifications.length === 0" class="empty-state">
+    <p>No hay solicitudes para mostrar en este momento.</p>
+  </div>
+
+  <!-- Cuadrícula de Tarjetas de Certificación -->
+  <div class="cards-grid" *ngIf="!loading && certifications.length > 0">
+    <!-- Itera sobre cada solicitud de certificación -->
+    <div *ngFor="let cert of certifications" 
+         class="certification-card" 
+         [ngClass]="'status-' + cert.status.toLowerCase().replace(' ', '-')">
+      
+      <!-- Cabecera de la Tarjeta -->
       <div class="card-header">
-        <div *ngIf="isAdminView; else userViewHeader">
-          <h3>{{ cert.product }}</h3>
-          <p class="user-name">{{ cert.user }}</p>
+        <div>
+          <h3>{{ cert.projectName }}</h3>
+          <!-- Muestra el nombre y email del usuario si es vista de admin -->
+          <p *ngIf="isAdminView" class="user-name">{{ cert.user.name }} ({{ cert.user.email }})</p>
         </div>
-        <ng-template #userViewHeader>
-          <h3>{{ cert.product }}</h3>
-        </ng-template>
-        <span class="status-badge" [class]="cert.status.toLowerCase()">
+        <!-- Insignia de Estado -->
+        <span class="status-badge" [ngClass]="cert.status.toLowerCase().replace(' ', '-')">
           {{ cert.status }}
         </span>
       </div>
+
+      <!-- Cuerpo de la Tarjeta -->
       <div class="card-body">
         <div class="card-info">
-          <span class="info-label">Fecha:</span>
-          <span class="info-value">{{ cert.date }}</span>
+          <span class="info-label">Tipo de Certificación:</span>
+          <span class="info-value">{{ cert.certificationType.replace('_', ' ') }}</span>
         </div>
-        <div class="card-info" *ngIf="cert.score">
-          <span class="info-label">Puntuación:</span>
-          <span class="info-value">{{ cert.score }}/100</span>
+        <div class="card-info">
+          <span class="info-label">Fecha de Solicitud:</span>
+          <!-- Formatea la fecha a un formato legible -->
+          <span class="info-value">{{ cert.createdAt | date:'dd/MM/yyyy' }}</span>
         </div>
+        <div class="card-info">
+          <span class="info-label">Costo:</span>
+          <!-- Formatea el costo como moneda -->
+          <span class="info-value">{{ cert.cost | currency:'USD':'symbol':'1.0-0' }}</span>
+        </div>
+      </div>
+
+      
+      <div class="card-footer" *ngIf="isAdminView">
+        
+        <select class="status-select" (change)="updateStatus(cert._id, $event)">
+          <option value="En proceso" [selected]="cert.status === 'En proceso'">En proceso</option>
+          <option value="Completada" [selected]="cert.status === 'Completada'">Completada</option>
+          <option value="Rechazada" [selected]="cert.status === 'Rechazada'">Rechazada</option>
+        </select>
+        
+        <button class="delete-btn" (click)="promptDelete(cert)" title="Eliminar Solicitud">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  
+  <div class="modal-overlay" *ngIf="showDeleteModal">
+    <div class="modal-content">
+      <h4>Confirmar Eliminación</h4>
+      <p>¿Estás seguro de que quieres eliminar la solicitud para el proyecto <strong>"{{ requestToDelete?.projectName }}"</strong>?</p>
+      <div class="modal-actions">
+        <button class="modal-btn cancel-btn" (click)="cancelDelete()">Cancelar</button>
+        <button class="modal-btn confirm-btn" (click)="confirmDelete()">Eliminar</button>
       </div>
     </div>
   </div>
+
 </section>
