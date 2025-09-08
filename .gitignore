@@ -24,6 +24,7 @@
 # ---------------------------
 # Específicos de Angular
 /frontend/dist/
+/frontend/build/
 /frontend/tmp/
 /frontend/.angular/
 /out-tsc/
