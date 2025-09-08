@@ -1,32 +1,5 @@
 /* login.component.css */
 
-/* --- Estilos para la Notificación Toast --- */
-.toast-notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px 20px;
-  border-radius: 8px;
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 16px;
-  /* Z-INDEX MÁS ALTO: Asegura que el toast esté por encima de todo */
-  z-index: 2001; 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  animation: slideIn 0.3s ease-out;
-}
-
-/* ... (el resto de los estilos del toast como .toast-success, etc., se quedan igual) ... */
-.toast-success { background-color: #28a745; }
-.toast-error { background-color: #dc3545; }
-.toast-close-btn { background: none; border: none; color: #fff; font-size: 24px; line-height: 1; cursor: pointer; margin-left: 15px; opacity: 0.8; }
-.toast-close-btn:hover { opacity: 1; }
-@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-
 /* Login Modal */
 .login-overlay {
   position: fixed;
@@ -223,11 +196,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 @keyframes scaleIn {
