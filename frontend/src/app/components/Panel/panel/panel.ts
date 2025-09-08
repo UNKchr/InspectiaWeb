@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { CertificationForm } from './components/certification-form/certification-form';
 import { CertificationsList } from './components/certifications-list/certifications-list';
 import { ReloadBalanceForm } from './components/reload-balance-form/reload-balance-form';
+import { ReloadBalanceToUser } from './components/reload-balance-to-user/reload-balance-to-user';
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/models/user.model';
 
@@ -16,7 +17,8 @@ import { User } from '../../../core/models/user.model';
     CommonModule, 
     CertificationForm, 
     CertificationsList, 
-    ReloadBalanceForm
+    ReloadBalanceForm,
+    ReloadBalanceToUser
   ],
   templateUrl: './panel.html',
   styleUrl: './panel.css'

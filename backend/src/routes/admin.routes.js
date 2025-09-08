@@ -6,7 +6,8 @@ const {
   getAllRequests,
   updateRequestStatus,
   addSaldoToUser,
-  deleteRequest
+  deleteRequest,
+  searchUsers
  } = require('../controllers/admin.controller');
 
 // Todas estas rutas están doblemente protegidas:
@@ -24,7 +25,10 @@ router.put('/requests/:requestId/status', adminAccess, updateRequestStatus);
 // DELETE /api/admin/requests/:requestId - Eliminar una solicitud
 router.delete('/requests/:requestId', adminAccess, deleteRequest);
 
-// POST /api/admin/add-saldo - Añadir saldo a un usuario
-router.post('/add-saldo', adminAccess, addSaldoToUser);
+// POST /api/admin/add-saldo-to-user - Añadir saldo a un usuario por userId o email
+router.post('/add-saldo-to-user', adminAccess, addSaldoToUser);
+
+// GET /api/admin/users/search?q= - Buscar usuarios por email (exacto o parcial) o listar 5 recientes
+router.get('/users/search', adminAccess, searchUsers);
 
 module.exports = router;
