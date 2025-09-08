@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://inspectiaweb-backend.onrender.com'
+  apiUrl: 'https://inspectiaweb-backend.onrender.com/api'
 }
