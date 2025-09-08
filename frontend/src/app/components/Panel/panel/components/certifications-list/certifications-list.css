@@ -1,109 +1,3 @@
-.user-name {
-  color: white;
-  font-weight: 600;
-  font-size: 0.875rem;
-  line-height: 1.2;
-}
-
-.nav-link svg {
-  flex-shrink: 0;
-}
-
-/* Sidebar Footer */
-.sidebar-footer {
-  padding: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
-  background: none;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.logout-btn:hover {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-/* Hidden class for collapsed sidebar */
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-  width: 0;
-  margin-left: 0;
-  margin-right: 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-/* Main Content */
-.main-content {
-  flex: 1;
-  margin-left: 280px;
-  transition: margin-left 0.3s ease;
-  position: relative;
-  z-index: 5000;
-}
-
-.sidebar.collapsed + .main-content {
-  margin-left: 80px;
-}
-
-/* Content Header */
-.content-header {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1.5rem 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 40;
-}
-
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background 0.3s ease;
-}
-
-.mobile-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.header-title h1 {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-}
-
-.header-title p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
-}
-
-/* Content Body */
-.content-body {
-  padding: 2rem;
-}
-
 .content-section {
   animation: fadeInUp 0.6s ease-out;
 }
@@ -123,41 +17,6 @@
 .section-header p {
   color: rgba(255, 255, 255, 0.7);
   font-size: 1rem;
-}
-
-/* Welcome Section */
-.welcome-section {
-  text-align: center;
-}
-
-.welcome-hero h2 {
-  color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.welcome-hero p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.25rem;
-  margin-bottom: 3rem;
-  max-width: 36rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.form-input::placeholder,
-.form-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  outline: none;
-  border-color: #06b6d4;
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
-  transform: translateY(-2px);
 }
 
 /* Cards Grid */
@@ -196,11 +55,6 @@
   margin-bottom: 0.25rem;
 }
 
-.admin-card .user-name {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
-}
-
 .status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -208,24 +62,6 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.status-badge.aprobado {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.3);
-}
-
-.status-badge.rechazado {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.status-badge.pendiente {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .card-body {
@@ -262,123 +98,6 @@
   }
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-  
-  .sidebar.collapsed {
-    transform: translateX(-100%);
-  }
-  
-  .sidebar:not(.collapsed) {
-    transform: translateX(0);
-  }
-  
-  .main-content {
-    margin-left: 0;
-  }
-  
-  .sidebar.collapsed + .main-content {
-    margin-left: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .mobile-menu-btn {
-    display: block;
-  }
-  
-  .content-header {
-    padding: 1rem;
-  }
-  
-  .content-body {
-    padding: 1rem;
-  }
-  
-  .form-container {
-    padding: 1.5rem;
-  }
-  
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .welcome-hero h2 {
-    font-size: 2rem;
-  }
-  
-  .section-header h2 {
-    font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .header-title h1 {
-    font-size: 1.25rem;
-  }
-  
-  .header-title p {
-    display: none;
-  }
-  
-  .certification-card {
-    padding: 1rem;
-  }
-  
-  .card-header {
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
-  }
-}
-
-/* Custom Scrollbar */
-.sidebar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background: rgba(6, 182, 212, 0.3);
-  border-radius: 2px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(6, 182, 212, 0.5);
-}
-
-.nav-link span, .logout-btn span {
-  transition: opacity 0.3s ease, width 0.3s ease;
-}
-
-.sidebar.collapsed .sidebar-header {
-  flex-direction: column; /* Apila el logo y el botón verticalmente */
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;               /* Añade un espacio entre el logo y el botón */
-  padding-top: 1.5rem;
-  padding-bottom: 2.1rem;
-}
-
-/* Unifica la apariencia de los botones en el menú colapsado */
-.sidebar.collapsed .nav-link,
-.sidebar.collapsed .logout-btn {
-  width: 44px;             /* Define un ancho fijo */
-  height: 44px;            /* Define un alto fijo para hacerlo cuadrado */
-  margin: 0.5rem auto;     /* Centra el botón y le da espacio vertical */
-  padding: 0;              /* Elimina el padding que ya no es necesario */
-  justify-content: center; /* Centra el icono SVG perfectamente en el medio */
-}
 
 .card-footer {
   padding: 10px 15px;

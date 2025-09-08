@@ -1,13 +1,4 @@
 
-.nav-link svg {
-  flex-shrink: 0;
-}
-
-.header-title p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
-}
-
 .content-section {
   animation: fadeInUp 0.6s ease-out;
 }
@@ -29,83 +20,6 @@
   font-size: 1rem;
 }
 
-/* Welcome Section */
-.welcome-section {
-  text-align: center;
-}
-
-.welcome-hero h2 {
-  color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.welcome-hero p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.25rem;
-  margin-bottom: 3rem;
-  max-width: 36rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.stat-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1rem;
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
-  border-color: rgba(6, 182, 212, 0.4);
-}
-
-.stat-icon {
-  width: 3rem;
-  height: 3rem;
-  background: linear-gradient(135deg, #06b6d4, #3b82f6);
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  flex-shrink: 0;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-number {
-  color: white;
-  font-size: 1.875rem;
-  font-weight: bold;
-  line-height: 1;
-}
-
-.stat-label {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
 /* Forms */
 .form-container {
   max-width: 42rem;
@@ -114,32 +28,6 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 1rem;
   padding: 2rem;
-}
-
-.form-container.small {
-  max-width: 28rem;
-}
-
-.current-balance {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.current-balance .balance-label {
-  display: block;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
-  margin-bottom: 0.25rem;
-}
-
-.current-balance .balance-amount {
-  color: #06b6d4;
-  font-size: 1.5rem;
-  font-weight: bold;
 }
 
 .form-group {
@@ -193,38 +81,6 @@
   min-height: 100px;
 }
 
-/* File Upload */
-.file-upload {
-  position: relative;
-}
-
-.file-input {
-  position: absolute;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
-.file-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.file-label:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #06b6d4;
-  color: #06b6d4;
-}
 
 /* Submit Button */
 .submit-btn {
@@ -268,90 +124,11 @@
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-  
-  .sidebar.collapsed {
-    transform: translateX(-100%);
-  }
-  
-  .sidebar:not(.collapsed) {
-    transform: translateX(0);
-  }
-}
-
 @media (max-width: 768px) {
-  .mobile-menu-btn {
-    display: block;
-  }
-  
   .form-container {
     padding: 1.5rem;
   }
-  
-  .welcome-hero h2 {
-    font-size: 2rem;
-  }
-  
   .section-header h2 {
     font-size: 1.5rem;
   }
-}
-
-@media (max-width: 640px) {
-  .header-title h1 {
-    font-size: 1.25rem;
-  }
-  
-  .header-title p {
-    display: none;
-  }
-}
-
-/* Custom Scrollbar */
-.sidebar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background: rgba(6, 182, 212, 0.3);
-  border-radius: 2px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(6, 182, 212, 0.5);
-}
-
-.nav-link span, .logout-btn span {
-  transition: opacity 0.3s ease, width 0.3s ease;
-}
-
-.sidebar.collapsed .sidebar-header {
-  flex-direction: column; /* Apila el logo y el botón verticalmente */
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;               /* Añade un espacio entre el logo y el botón */
-  padding-top: 1.5rem;
-  padding-bottom: 2.1rem;
-}
-
-/* Unifica la apariencia de los botones en el menú colapsado */
-.sidebar.collapsed .nav-link,
-.sidebar.collapsed .logout-btn {
-  width: 44px;             /* Define un ancho fijo */
-  height: 44px;            /* Define un alto fijo para hacerlo cuadrado */
-  margin: 0.5rem auto;     /* Centra el botón y le da espacio vertical */
-  padding: 0;              /* Elimina el padding que ya no es necesario */
-  justify-content: center; /* Centra el icono SVG perfectamente en el medio */
-}
-
-.sidebar.collapsed .brand {
-  justify-content: center;
-  gap: 0;
 }

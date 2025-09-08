@@ -594,10 +594,4 @@
     .brand {
       font-size: 1.2rem;
     }
-
-    .form-input,
-    .login-submit-btn {
-      padding: 0.75rem;
-      font-size: 1rem;
-    }
   }
