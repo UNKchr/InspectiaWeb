@@ -45,18 +45,14 @@ export class CertificationForm {
   }
 
   onSubmitCertification(): void {
-    console.log('[CertificationForm] Iniciando envío de formulario...');
     if (this.isSubmitting) {
-      console.log('[CertificationForm] Envío ya en progreso. Abortando.');
       return;
     }
 
     this.isSubmitting = true;
-    console.log('[CertificationForm] Datos a enviar:', this.certificationData);
 
     this.requestService.createRequest(this.certificationData).subscribe({
       next: (response) => {
-        console.log('[CertificationForm] Solicitud creada exitosamente. Respuesta:', response);
         this.notificationService.show(response.message, 'success');
         // Actualizamos el saldo del usuario en el frontend a través del servicio de Auth
         this.authService.updateUserBalance(response.newSaldo);
@@ -64,7 +60,6 @@ export class CertificationForm {
         this.isSubmitting = false;
       },
       error: (err) => {
-        console.error('[CertificationForm] Error al crear la solicitud:', err);
         this.notificationService.show(err.error.message || 'Ocurrió un error al crear la solicitud.', 'error');
         this.isSubmitting = false;
       }

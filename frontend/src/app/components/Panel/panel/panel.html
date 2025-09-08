@@ -217,6 +217,8 @@
       @if (user) {
       <app-reload-balance-form *ngSwitchCase="'reload-balance'" [currentBalance]="user.saldo"></app-reload-balance-form>
       }
+      <app-reload-balance-to-user *ngSwitchCase="'admin-reload'"></app-reload-balance-to-user>
+      
       
       <div class="modal-overlay" *ngIf="showLogoutModal">
         <div class="modal-content">

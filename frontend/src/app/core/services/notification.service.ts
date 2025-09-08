@@ -23,7 +23,6 @@ export class NotificationService {
    * @param type El tipo de notificación (success, error, info).
    */
   show(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
-    console.log(`[NotificationService] Mostrando notificación: { message: "${message}", type: "${type}" }`);
     this.notificationSubject.next({ message, type });
   }
 

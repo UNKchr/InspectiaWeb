@@ -15,12 +15,10 @@ export class LandingPageComponent {
   mobileMenuOpen = false;
 
   onLoginClick() {
-    console.log('LandingPageComponent: onLoginClick');
     this.openLogin.emit();
   }
 
   onRegisterClick() {
-    console.log('LandingPageComponent: onRegisterClick');
     this.openRegister.emit();
   }
 
