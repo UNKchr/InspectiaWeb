@@ -1,3 +1,5 @@
+import 'zone.js/node'; // Necesario para SSR Angular
+import '@angular/compiler'; // Asegura disponibilidad del compilador en caso de necesitar JIT fallback
 import express from 'express';
 import compression from 'compression';
 import { readFileSync } from 'fs';
@@ -9,8 +11,9 @@ const serverFolder = join(distFolder, 'server');
 const indexHtml = readFileSync(join(serverFolder, 'index.server.html'), 'utf-8');
 
 async function start() {
-	const { default: bootstrap } = await import('./build/inspectia-web/server/main.server.mjs');
-	const { renderApplication } = await import('@angular/platform-server');
+		// Import AOT bootstrap del bundle server generado por ng build --ssr
+		const { default: bootstrap } = await import('./build/inspectia-web/server/main.server.mjs');
+		const { renderApplication } = await import('@angular/platform-server');
 
 	const app = express();
 	app.use(compression());
