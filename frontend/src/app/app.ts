@@ -9,7 +9,7 @@ import { NotificationComponent } from './components/notification/notification.co
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [LoginComponent, Register, CommonModule, RouterOutlet, NotificationComponent, LandingPageComponent],
+  imports: [LoginComponent, Register, CommonModule, RouterOutlet, NotificationComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

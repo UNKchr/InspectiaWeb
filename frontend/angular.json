@@ -17,6 +17,7 @@
             "baseHref": "./",
             "outputPath": "build/inspectia-web",
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -72,6 +73,33 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "serve-ssr": {
+          "builder": "@angular/build:ssr-dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "inspectia-web:build:production"
+            },
+            "development": {
+              "buildTarget": "inspectia-web:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@angular/build:prerender",
+          "options": {
+            "routes": ["/"]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "inspectia-web:build:production"
+            },
+            "development": {
+              "browserTarget": "inspectia-web:build:development"
+            }
+          },
+          "defaultConfiguration": "production"
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
