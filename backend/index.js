@@ -27,6 +27,11 @@ app.use('/api/user', userRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/admin', adminRoutes); 
 
+// Health / debug simple
+app.get('/api/health', (req,res)=>{
+  res.json({ status:'ok', time: new Date().toISOString() });
+});
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
