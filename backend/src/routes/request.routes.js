@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middlewares/auth.middleware'); 
-const { createRequest, getMyRequests, addSaldo } = require('../controllers/request.controller');
+const { createRequest, getMyRequests, addSaldo, generateCertificatePDF } = require('../controllers/request.controller');
 
 //Todas las rutas requieren que el usuario este autenticado
 
@@ -13,5 +13,8 @@ router.get('/my-requests', protect, getMyRequests);
 
 // POST /api/requests/add-saldo - Inyectar saldo a un usuario
 router.post('/add-saldo', protect, addSaldo);
+
+// GET /api/requests/:requestId/certificate - Generar PDF si la solicitud está completada
+router.get('/:requestId/certificate', protect, generateCertificatePDF);
 
 module.exports = router;

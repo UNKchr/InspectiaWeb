@@ -70,6 +70,39 @@
   gap: 0.5rem;
 }
 
+.card-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  border: none;
+  color: #fff;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(14,165,233,0.3);
+}
+
+.pdf-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(14,165,233,0.45);
+}
+
+.pdf-btn svg {
+  stroke: currentColor;
+}
+
 .card-info {
   display: flex;
   justify-content: space-between;

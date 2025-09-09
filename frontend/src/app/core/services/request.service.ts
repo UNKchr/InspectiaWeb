@@ -47,4 +47,9 @@ export class RequestService {
   deleteRequest(requestId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.ApiUrl}/admin/requests/${requestId}`);
   }
+
+  // Descargar certificado PDF (respuesta binaria)
+  downloadCertificate(requestId: string): Observable<Blob> {
+    return this.http.get(`${this.ApiUrl}/requests/${requestId}/certificate`, { responseType: 'blob' });
+  }
 }
