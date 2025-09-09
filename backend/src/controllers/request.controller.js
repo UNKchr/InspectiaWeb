@@ -1,5 +1,8 @@
 const CertificationRequest = require('../models/certificationRequest.model');
 const User = require('../models/user.model');
+const ejs = require('ejs');
+const puppeteer = require('puppeteer');
+const path = require('path');
 
 //Precios simulados para cada certificacion
 const CERTIFICATION_COSTS = {
@@ -79,3 +82,35 @@ exports.addSaldo = async (req, res) => {
     res.status(500).json({ message: 'Error del servidor' });
   }
 }
+
+// Generar PDF usando HTML/CSS (EJS + Puppeteer)
+// GET /api/requests/:requestId/certificate
+exports.generateCertificatePDF = async (req, res) => {
+  const { requestId } = req.params;
+  try {
+    const request = await CertificationRequest.findOne({ _id: requestId, user: req.user._id }).populate('user', 'name email');
+    if (!request) return res.status(404).json({ message: 'Solicitud no encontrada' });
+    if (request.status !== 'Completada') return res.status(400).json({ message: 'La solicitud aún no está completada' });
+
+    const templatePath = path.join(__dirname, '..', 'templates', 'certificate.ejs');
+    const certNumber = `CERT-${request._id.toString().substring(0, 8).toUpperCase()}`;
+
+    const html = await ejs.renderFile(templatePath, { ...request.toObject(), user: request.user, certNumber });
+
+    const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox','--disable-setuid-sandbox'] });
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+
+    // Ajustar a tamaño A4
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' } });
+    await browser.close();
+
+    const fileName = `certificacion_${request._id}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${fileName}"`);
+    return res.send(pdfBuffer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error generando el PDF (HTML)' });
+  }
+};

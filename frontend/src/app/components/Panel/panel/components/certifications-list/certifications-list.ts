@@ -86,4 +86,25 @@ export class CertificationsList implements OnInit {
       }
     });
   }
+
+  downloadCertificate(cert: CertificationRequest): void {
+    if (cert.status !== 'Completada') {
+      this.notificationService.show('La certificación aún no está completada', 'info');
+      return;
+    }
+    this.requestService.downloadCertificate(cert._id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `certificacion_${cert.projectName.replace(/[^a-z0-9_\-]/gi,'_')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        this.notificationService.show('Certificado descargado', 'success');
+      },
+      error: () => this.notificationService.show('Error al generar el certificado', 'error')
+    });
+  }
 }
