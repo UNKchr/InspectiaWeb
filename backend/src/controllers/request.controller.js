@@ -4,6 +4,32 @@ const ejs = require('ejs');
 const puppeteer = require('puppeteer');
 const path = require('path');
 
+// Reutilizar una sola instancia de navegador para reducir consumo de RAM / cold start
+let _browserPromise = null;
+async function getBrowser() {
+  if (_browserPromise) return _browserPromise;
+  const launchOpts = {
+    headless: true, // "new" a veces provoca issues en ciertos contenedores
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--no-zygote',
+      '--single-process'
+    ]
+  };
+  if (process.env.CHROME_BIN) {
+    launchOpts.executablePath = process.env.CHROME_BIN;
+  }
+  _browserPromise = puppeteer.launch(launchOpts).catch(err => {
+    console.error('[PUPPETEER_LAUNCH_ERROR]', err);
+    _browserPromise = null;
+    throw err;
+  });
+  return _browserPromise;
+}
+
 //Precios simulados para cada certificacion
 const CERTIFICATION_COSTS = {
   'CALIDAD_SOFTWARE': 1000,
@@ -97,20 +123,29 @@ exports.generateCertificatePDF = async (req, res) => {
 
     const html = await ejs.renderFile(templatePath, { ...request.toObject(), user: request.user, certNumber });
 
-    const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox','--disable-setuid-sandbox'] });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    // Ajustar a tamaño A4
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' } });
-    await browser.close();
+    let pdfBuffer;
+    try {
+      const browser = await getBrowser();
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'domcontentloaded' });
+      pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' }
+      });
+      await page.close();
+    } catch (browserErr) {
+      console.error('[CERTIFICATE_PDF_BROWSER_ERROR]', browserErr);
+      throw browserErr;
+    }
 
     const fileName = `certificacion_${request._id}.pdf`;
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="${fileName}"`);
     return res.send(pdfBuffer);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error generando el PDF (HTML)' });
+    console.error('[CERTIFICATE_PDF_ERROR]', error.message, error.stack);
+    const debugInfo = process.env.NODE_ENV === 'production' ? {} : { error: error.message, stack: error.stack };
+    res.status(500).json({ message: 'Error generando el PDF (HTML)', ...debugInfo });
   }
 };
