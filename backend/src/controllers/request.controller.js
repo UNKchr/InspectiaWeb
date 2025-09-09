@@ -16,8 +16,7 @@ async function getBrowser() {
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
-      '--no-zygote',
-      '--single-process'
+  '--no-zygote'
     ]
   };
   if (process.env.CHROME_BIN) {
@@ -138,34 +137,48 @@ exports.generateCertificatePDF = async (req, res) => {
       return res.status(500).json({ message: 'Error procesando plantilla' });
     }
 
-    let pdfBuffer;
-    try {
-      const browser = await getBrowser();
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
-      pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' }
-      });
-      await page.close();
-    } catch (browserErr) {
-      console.error('[CERTIFICATE_PDF_BROWSER_ERROR]', browserErr.message, browserErr.stack);
-      console.warn('[CERTIFICATE_FALLBACK_PDFKIT] Activando fallback básico.');
-      // Fallback simple con PDFKit para no dejar al usuario sin archivo.
+  let pdfBuffer;
+  let pdfEngine = 'puppeteer';
+  const puppeteerDisabled = process.env.USE_PUPPETEER === 'false';
+    if (!puppeteerDisabled) {
+      try {
+        const browser = await getBrowser();
+        const page = await browser.newPage();
+        console.log('[CERTIFICATE_PDF_INFO] Navegador version:', await browser.version());
+        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        // Espera pequeña para layout
+        await page.waitForTimeout(200);
+        pdfBuffer = await page.pdf({
+          format: 'A4',
+          printBackground: true,
+          margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' }
+        });
+        await page.close();
+      } catch (browserErr) {
+        console.error('[CERTIFICATE_PDF_BROWSER_ERROR]', browserErr.message, browserErr.stack);
+        pdfEngine = 'fallback-pdfkit';
+      }
+    } else {
+      pdfEngine = 'fallback-pdfkit';
+      console.log('[CERTIFICATE_PDF_INFO] Puppeteer desactivado via USE_PUPPETEER=false');
+    }
+
+    if (pdfEngine === 'fallback-pdfkit' || !pdfBuffer) {
+      console.warn('[CERTIFICATE_FALLBACK_PDFKIT] Generando PDF básico.');
       pdfBuffer = await new Promise((resolve, reject) => {
         try {
           const doc = new PDFDocument({ size: 'A4', margin: 50 });
           const chunks = [];
           doc.on('data', d => chunks.push(d));
           doc.on('end', () => resolve(Buffer.concat(chunks)));
-          doc.fontSize(22).text('Certificado', { align: 'center' });
+          doc.fontSize(22).text('Certificado (Fallback)', { align: 'center' });
           doc.moveDown();
           doc.fontSize(14).text(`Usuario: ${request.user.name} (${request.user.email})`);
           doc.text(`Certificación: ${request.certificationType}`);
           doc.text(`Proyecto: ${request.projectName}`);
           doc.text(`Fecha emisión: ${new Date(request.updatedAt).toLocaleDateString('es-ES')}`);
-          doc.text('Este es un PDF generado por fallback (estilos mínimos).');
+          doc.moveDown();
+          doc.fontSize(10).text('Este PDF se generó usando el motor de fallback.');
           doc.end();
         } catch(err){
           reject(err);
@@ -174,8 +187,9 @@ exports.generateCertificatePDF = async (req, res) => {
     }
 
     const fileName = `certificacion_${request._id}.pdf`;
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename="${fileName}"`);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `inline; filename="${fileName}"`);
+  res.setHeader('X-PDF-Engine', pdfEngine);
   console.timeEnd('[CERTIFICATE_TOTAL]');
   return res.send(pdfBuffer);
   } catch (error) {
