@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 const ejs = require('ejs');
 const puppeteer = require('puppeteer');
 const path = require('path');
+const PDFDocument = require('pdfkit'); // Fallback
 
 // Reutilizar una sola instancia de navegador para reducir consumo de RAM / cold start
 let _browserPromise = null;
@@ -141,7 +142,7 @@ exports.generateCertificatePDF = async (req, res) => {
     try {
       const browser = await getBrowser();
       const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: 'domcontentloaded' });
+      await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
       pdfBuffer = await page.pdf({
         format: 'A4',
         printBackground: true,
@@ -149,8 +150,27 @@ exports.generateCertificatePDF = async (req, res) => {
       });
       await page.close();
     } catch (browserErr) {
-      console.error('[CERTIFICATE_PDF_BROWSER_ERROR]', browserErr);
-      throw browserErr;
+      console.error('[CERTIFICATE_PDF_BROWSER_ERROR]', browserErr.message, browserErr.stack);
+      console.warn('[CERTIFICATE_FALLBACK_PDFKIT] Activando fallback básico.');
+      // Fallback simple con PDFKit para no dejar al usuario sin archivo.
+      pdfBuffer = await new Promise((resolve, reject) => {
+        try {
+          const doc = new PDFDocument({ size: 'A4', margin: 50 });
+          const chunks = [];
+          doc.on('data', d => chunks.push(d));
+          doc.on('end', () => resolve(Buffer.concat(chunks)));
+          doc.fontSize(22).text('Certificado', { align: 'center' });
+          doc.moveDown();
+          doc.fontSize(14).text(`Usuario: ${request.user.name} (${request.user.email})`);
+          doc.text(`Certificación: ${request.certificationType}`);
+          doc.text(`Proyecto: ${request.projectName}`);
+          doc.text(`Fecha emisión: ${new Date(request.updatedAt).toLocaleDateString('es-ES')}`);
+          doc.text('Este es un PDF generado por fallback (estilos mínimos).');
+          doc.end();
+        } catch(err){
+          reject(err);
+        }
+      });
     }
 
     const fileName = `certificacion_${request._id}.pdf`;
