@@ -114,14 +114,28 @@ exports.addSaldo = async (req, res) => {
 exports.generateCertificatePDF = async (req, res) => {
   const { requestId } = req.params;
   try {
+    console.time('[CERTIFICATE_TOTAL]');
+    console.log('[CERTIFICATE_REQ] user', req.user && req.user._id, 'requestId', requestId);
     const request = await CertificationRequest.findOne({ _id: requestId, user: req.user._id }).populate('user', 'name email');
-    if (!request) return res.status(404).json({ message: 'Solicitud no encontrada' });
-    if (request.status !== 'Completada') return res.status(400).json({ message: 'La solicitud aún no está completada' });
+    if (!request) {
+      console.warn('[CERTIFICATE_NOT_FOUND]', requestId);
+      return res.status(404).json({ message: 'Solicitud no encontrada' });
+    }
+    if (request.status !== 'Completada') {
+      console.warn('[CERTIFICATE_STATUS_INVALID]', request.status);
+      return res.status(400).json({ message: 'La solicitud aún no está completada' });
+    }
 
     const templatePath = path.join(__dirname, '..', 'templates', 'certificate.ejs');
     const certNumber = `CERT-${request._id.toString().substring(0, 8).toUpperCase()}`;
 
-    const html = await ejs.renderFile(templatePath, { ...request.toObject(), user: request.user, certNumber });
+    let html;
+    try {
+      html = await ejs.renderFile(templatePath, { ...request.toObject(), user: request.user, certNumber });
+    } catch(templateErr) {
+      console.error('[CERTIFICATE_TEMPLATE_ERROR]', templateErr);
+      return res.status(500).json({ message: 'Error procesando plantilla' });
+    }
 
     let pdfBuffer;
     try {
@@ -142,7 +156,8 @@ exports.generateCertificatePDF = async (req, res) => {
     const fileName = `certificacion_${request._id}.pdf`;
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="${fileName}"`);
-    return res.send(pdfBuffer);
+  console.timeEnd('[CERTIFICATE_TOTAL]');
+  return res.send(pdfBuffer);
   } catch (error) {
     console.error('[CERTIFICATE_PDF_ERROR]', error.message, error.stack);
     const debugInfo = process.env.NODE_ENV === 'production' ? {} : { error: error.message, stack: error.stack };
