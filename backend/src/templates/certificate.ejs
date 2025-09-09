@@ -65,18 +65,23 @@
 
     <section class="details">
       <h3>CERTIFICATION DETAILS</h3>
-      <% const rows = [
-        ['Tipo de Certificación', certificationType.replace(/_/g,' ')],
-        ['Nombre del Proyecto', projectName],
-        ['Descripción', projectDescription.length>80? projectDescription.substring(0,77)+'...': projectDescription],
-        ['URL del Proyecto', projectUrl],
-        ['Repositorio', repoUrl],
-        ['Empresa', companyName],
-        ['Dirección Empresa', companyAddress],
-        ['Plataforma', appPlatform],
-        ['Costo de Certificación', `$${cost.toFixed(2)} USD`],
-        ['Fecha de Emisión', new Date(updatedAt).toLocaleDateString('es-ES')]
-      ].filter(r=> r[1]);
+      <% const _safe = v => (typeof v === 'string' ? v.trim() : (v??''));
+         const _costFmt = (typeof cost === 'number') ? `$${cost.toFixed(2)} USD` : '';
+         const _certType = certificationType ? certificationType.replace(/_/g,' ') : '';
+         const _descRaw = _safe(projectDescription);
+         const _desc = _descRaw.length>80 ? _descRaw.substring(0,77)+'...' : _descRaw;
+         const rows = [
+           ['Tipo de Certificación', _certType],
+           ['Nombre del Proyecto', _safe(projectName)],
+           ['Descripción', _desc],
+           ['URL del Proyecto', _safe(projectUrl)],
+           ['Repositorio', _safe(repoUrl)],
+           ['Empresa', _safe(companyName)],
+           ['Dirección Empresa', _safe(companyAddress)],
+           ['Plataforma', _safe(appPlatform)],
+           ['Costo de Certificación', _costFmt],
+           ['Fecha de Emisión', updatedAt ? new Date(updatedAt).toLocaleDateString('es-ES') : '']
+         ].filter(r=> r[1]);
       %>
       <% rows.forEach((r,i)=> { %>
         <div class="row <%= i%2===0? 'alt':'' %>"><b><%= r[0] %>:</b><span><%= r[1] %></span></div>
