@@ -7,7 +7,8 @@ const {
   updateRequestStatus,
   addSaldoToUser,
   deleteRequest,
-  searchUsers
+  searchUsers,
+  searchCertificationRequests
  } = require('../controllers/admin.controller');
 
 // Todas estas rutas están doblemente protegidas:
@@ -18,6 +19,9 @@ const adminAccess = [protect, adminOnly];
 
 // GET /api/admin/requests - Obtener todas las solicitudes
 router.get('/requests', adminAccess, getAllRequests);
+
+// GET /api/admin/requests/search - Buscar solicitudes por projectName + filtros
+router.get('/requests/search', adminAccess, searchCertificationRequests);
 
 // PUT /api/admin/requests/:requestId/status - Actualizar estado de una solicitud
 router.put('/requests/:requestId/status', adminAccess, updateRequestStatus);

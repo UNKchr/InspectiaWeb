@@ -14,6 +14,162 @@ exports.getAllRequests = async (req, res) => {
   }
 };
 
+// Buscar solicitudes de certificación por projectName con filtros opcionales (tipo y fecha)
+// GET /api/admin/requests/search
+// Query params:
+// - q: texto a buscar en projectName (parcial, case-insensitive)
+// - type: tipo de certificación (CALIDAD_SOFTWARE | ISO_27001 | SEGURIDAD_APP)
+// - from: fecha inicio (ISO string o YYYY-MM-DD) para createdAt
+// - to: fecha fin (ISO string o YYYY-MM-DD) para createdAt
+// - limit: cantidad de elementos a retornar (1..10). Si no se envía, por defecto 5.
+// Comportamiento:
+// - Sin q/type/fecha: lista por defecto con prioridad de estado (Completada, Rechazada, En proceso)
+//   y respeta el límite indicado (1..10; default 5).
+exports.searchCertificationRequests = async (req, res) => {
+  try {
+    const { q, type, from, to, limit } = req.query;
+
+    // Límite 1..10 (por defecto 5)
+    let limitNum = parseInt(limit, 10);
+    if (!Number.isFinite(limitNum)) limitNum = 5;
+    if (limitNum < 1 || limitNum > 10) {
+      return res.status(400).json({ message: 'El límite debe estar entre 1 y 10' });
+    }
+
+    const hasQuery = Boolean(q && q.trim());
+    const hasType = Boolean(type);
+    const hasDate = Boolean(from || to);
+
+    // Validar tipo si viene
+    const allowedTypes = ['CALIDAD_SOFTWARE', 'ISO_27001', 'SEGURIDAD_APP'];
+    if (hasType && !allowedTypes.includes(type)) {
+      return res.status(400).json({ message: 'Tipo de certificación inválido' });
+    }
+
+    // Parsear fecha: si viene como ISO con 'T', usar ese instante exacto;
+    // si viene como 'YYYY-MM-DD' o 'DD/MM/YYYY', crear límites del día en LOCAL.
+    const parseDateEndpoint = (input, kind /* 'start' | 'end' */) => {
+      if (!input || typeof input !== 'string') return null;
+      if (input.includes('T')) {
+        const dt = new Date(input);
+        return isNaN(dt.getTime()) ? null : dt;
+      }
+      // Soportar 'YYYY-MM-DD' del input type=date y 'DD/MM/YYYY'
+      let y, m, d;
+      const isoMatch = input.match(/^\d{4}-\d{2}-\d{2}$/);
+      const dmyMatch = input.match(/^\d{2}\/\d{2}\/\d{4}$/);
+      if (isoMatch) {
+        const [yy, mm, dd] = input.split('-').map(Number);
+        y = yy; m = mm; d = dd;
+      } else if (dmyMatch) {
+        const [dd, mm, yy] = input.split('/').map(Number);
+        y = yy; m = mm; d = dd;
+      } else {
+        const dt = new Date(input);
+        if (isNaN(dt.getTime())) return null;
+        y = dt.getFullYear(); m = dt.getMonth() + 1; d = dt.getDate();
+      }
+      return kind === 'start'
+        ? new Date(y, (m - 1), d, 0, 0, 0, 0)
+        : new Date(y, (m - 1), d, 23, 59, 59, 999);
+    };
+
+    // Validar/armar filtro de fechas usando límites del día en horario local
+    let dateFilter = undefined;
+    if (from || to) {
+      dateFilter = {};
+      if (from) {
+        const fromDt = parseDateEndpoint(from, 'start');
+        if (!fromDt) {
+          return res.status(400).json({ message: 'Fecha "from" inválida' });
+        }
+        dateFilter.$gte = fromDt; // inicio del día local o instante ISO
+      }
+      if (to) {
+        const toDt = parseDateEndpoint(to, 'end');
+        if (!toDt) {
+          return res.status(400).json({ message: 'Fecha "to" inválida' });
+        }
+        dateFilter.$lte = toDt; // fin del día local o instante ISO (inclusivo)
+      }
+    }
+
+    // Sin filtros ni query: listado por defecto con prioridad de estado
+    if (!hasQuery && !hasType && !hasDate) {
+      const pipeline = [
+        {
+          $addFields: {
+            statusPriority: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ['$status', 'Completada'] }, then: 0 },
+                  { case: { $eq: ['$status', 'Rechazada'] }, then: 1 },
+                  { case: { $eq: ['$status', 'En proceso'] }, then: 2 }
+                ],
+                default: 3
+              }
+            }
+          }
+        },
+        { $sort: { statusPriority: 1, createdAt: -1 } },
+        { $limit: limitNum },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            user: { _id: '$user._id', name: '$user.name', email: '$user.email' },
+            certificationType: 1,
+            status: 1,
+            projectName: 1,
+            projectDescription: 1,
+            projectUrl: 1,
+            repoUrl: 1,
+            companyName: 1,
+            companyAddress: 1,
+            appPlatform: 1,
+            cost: 1,
+            createdAt: 1,
+            updatedAt: 1
+          }
+        }
+      ];
+
+      const results = await CertificationRequest.aggregate(pipeline);
+      return res.json({ results, limit: limitNum });
+    }
+
+    // Con query/filtros: búsqueda por projectName + filtros de tipo/fecha
+    const filters = {};
+    if (hasQuery) {
+      const escaped = q.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filters.projectName = { $regex: escaped, $options: 'i' };
+    }
+    if (hasType) {
+      filters.certificationType = type;
+    }
+    if (dateFilter) {
+      filters.createdAt = dateFilter;
+    }
+
+  const results = await CertificationRequest.find(filters)
+      .sort({ createdAt: -1 })
+      .limit(limitNum)
+      .populate('user', 'name email');
+
+    return res.json({ results, count: results.length, limit: limitNum });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
 //Cambiar el estado de una solicitud
 exports.updateRequestStatus = async (req, res) => {
   const { requestId } = req.params;

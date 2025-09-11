@@ -50,6 +50,11 @@ const CertificationRequestSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Índices para acelerar búsquedas por nombre, tipo y fechas
+CertificationRequestSchema.index({ projectName: 'text' });
+CertificationRequestSchema.index({ certificationType: 1, createdAt: -1 });
+CertificationRequestSchema.index({ createdAt: -1 });
+
 const CertificationRequest = mongoose.model('CertificationRequest', CertificationRequestSchema);
 
 module.exports = CertificationRequest;

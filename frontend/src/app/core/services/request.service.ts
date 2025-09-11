@@ -21,6 +21,12 @@ export interface RequestResponse {
   request: CertificationRequest; 
 }
 
+export interface AdminSearchResponse {
+  results: CertificationRequest[];
+  count?: number;
+  limit: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -38,6 +44,19 @@ export class RequestService {
 
   getAllRequests(): Observable<CertificationRequest[]> {
     return this.http.get<CertificationRequest[]>(`${this.ApiUrl}/admin/requests`);
+  }
+
+  // Búsqueda/filtros para admin
+  searchAdminRequests(params: { q?: string; type?: string; from?: string; to?: string; limit?: number }): Observable<AdminSearchResponse> {
+    const query = new URLSearchParams();
+    if (params.q) query.set('q', params.q);
+    if (params.type) query.set('type', params.type);
+    if (params.from) query.set('from', params.from);
+    if (params.to) query.set('to', params.to);
+    if (params.limit) query.set('limit', String(params.limit));
+    const qs = query.toString();
+    const url = `${this.ApiUrl}/admin/requests/search${qs ? `?${qs}` : ''}`;
+    return this.http.get<AdminSearchResponse>(url);
   }
 
   updateRequestStatus(requestId: string, status: string): Observable<{ message: string, request: CertificationRequest }> {
