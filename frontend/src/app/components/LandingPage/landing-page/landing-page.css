@@ -163,18 +163,31 @@
   }
 
   .mobile-nav {
-    display: none; /* Hidden by default */
     background-color: var(--dark-secondary-bg);
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    padding: 1rem 0;
     box-shadow: 0 4px 6px var(--shadow-dark);
-    transform: translateY(-10px);
+    border-bottom-left-radius: .75rem;
+    border-bottom-right-radius: .75rem;
+    overflow: hidden;
+    max-height: 0; /* collapsed */
     opacity: 0;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transform: translateY(-6px);
+    transition: max-height .3s ease, opacity .25s ease, transform .3s ease;
   }
+
+  .mobile-nav.open {
+    padding-top: .5rem;
+    padding-bottom: .75rem;
+    max-height: 400px; /* should exceed content height */
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Utility class (still used to hide desktop nav when mobile menu open) */
+  .hidden { display: none !important; }
 
 
   .mobile-nav-content {
@@ -201,7 +214,7 @@
 
   .mobile-login-btn {
     width: calc(100% - 2rem);
-    background-color: var(--primary-color);
+    background-color: rgba(74, 161, 255, 0.3);
     color: var(--light-bg);
     padding: 0.75rem 1.5rem;
     border-radius: 9999px;
