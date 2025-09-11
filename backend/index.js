@@ -15,7 +15,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: '*',
+  origin: ['http://localhost:4200', 'https://inspectiaweb.onrender.com', 'http://localhost:4000'], // Cambia esto al dominio de tu frontend en producción
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -36,4 +36,5 @@ const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`URL: http://localhost:${PORT}`);
 });
