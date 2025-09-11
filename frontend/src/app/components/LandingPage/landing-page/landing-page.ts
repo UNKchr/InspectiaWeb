@@ -22,7 +22,5 @@ export class LandingPageComponent {
     this.openRegister.emit();
   }
 
-  toggleMobileMenu() {
-    this.mobileMenuOpen = !this.mobileMenuOpen;
-  }
+  toggleMobileMenu() { this.mobileMenuOpen = !this.mobileMenuOpen; }
 }
